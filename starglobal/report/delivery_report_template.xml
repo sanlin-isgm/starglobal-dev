@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+	<!-- **************** Inherit External Layout Header ************ -->
+	<template id="external_layout_inheirt" inherit_id="web.external_layout_standard">
+		<xpath expr="//div[1]" position="replace">
+			<div class="header">
+				<div class="row">
+					<div class="row">
+						<div class="col-12">
+							<img t-if="company.logo"
+								t-att-src="image_data_uri(company.logo)" alt="Logo"
+								style="display:block; margin-top:40px; margin-left: auto; margin-right: auto; width: 75%;" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<br />
+			<br />
+		</xpath>
+	</template>
+
+
+	<!-- Inherit Delivery Document Report (from module stock) -->
+	<template id="report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
+		<xpath expr="//t[@t-set='o']" position="replace" />
+		<xpath expr="//div[@class='page']/div[@class='row justify-content-end']" position="replace" />
+		
+		
+		<!-- ********* Customization Delivery Order PDF Header ********* -->
+		<xpath expr="//t[@t-set='partner']" position="replace">
+			<h6 style="text-align:right;"> <strong>DELIVERY ORDER</strong></h6><br/>
+			<div class="row" style="font-size: 14px;">
+				<div class="col-2" style="text-align: right;">
+					<strong>Bill To:</strong>
+				</div>
+				<div class="col-4" name="bill_to">
+					<div t-field="o.partner_id" />
+				</div>
+				<div class="col-2" style="text-align: right;">
+					<strong>Do No:</strong>
+				</div>
+				<div class="col-4" name="customer_name">
+					<div t-field="o.name" />
+				</div>
+			</div>
+			<div t-if="o.state" class="row" name="div_sched_date" style="font-size: 14px;">
+				<div class="col-2" style="text-align: right;">
+					<strong>Attention:</strong>
+				</div>
+				<div class="col-4" name="att">
+					<div t-field="o.partner_id" />
+				</div>				
+				<div class="col-2" style="text-align: right;">
+					<strong>DO Date:</strong>
+				</div>
+				<div class="col-4" name="date">
+					<t t-if="o.state == 'done'">
+						<p t-field="o.date_done" t-options='{"widget": "date"}' />
+					</t>
+					<t t-if="o.state != 'done'">
+						<p t-field="o.scheduled_date" t-options='{"widget": "date"}' />
+					</t>
+				</div>
+			</div>
+			<div class="row" style="font-size: 14px;">
+				<div class="col-8" style="text-align: right;">
+					<strong>Customer Ref No:</strong>
+				</div>
+				<div class="col-4" name="customer_ref_number">
+					<div t-field="o.partner_id.comment" />
+				</div>
+			</div>
+			<div class="row" style="font-size: 14px;">
+				<div class="col-8" style="text-align: right;">
+					<strong>TI No:</strong>
+				</div>
+				<div class="col-4" name="ti_number">
+					<div t-field="o.ti_number" />
+				</div>
+			</div>
+			<div class="row" style="font-size: 14px;">	
+				<div class="col-8" style="text-align: right;">
+					<strong>Delivery To:</strong>
+				</div>
+				<div class="col-4" name="delivery_to">
+					<div t-field="o.partner_id"
+						t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}' />
+				</div>
+			</div>
+			<br />
+			<br />
+		</xpath>
+		<!-- ********* End CustomerDelivery Order  PDF ********* -->
+		
+
+		<xpath expr="//div/h2" position="replace" />
+		<xpath expr="//div/div[@class='row mt32 mb32']" position="replace" />
+		
+		
+		<!-- ********* Customization Delivery Order PDF Table********* -->
+		<xpath expr="//table[@class='table table-sm']" position="replace">
+			<table class="table table-sm" name="stock_move_table">
+				<thead style="border:1px solid black;">
+					<tr style="text-align: center; font-size: 14px; border-color: white;background-color:#00008B; color: white;">
+						<th name="th_no" style="border:1px solid black;">NO.</th>
+						<th name="th_sm_quantity" style="border:1px solid black;">QUANTITY</th>
+						<th name="th_code" style="border:1px solid black;">ITEM CODE</th>
+						<th name="th_description" style="border:1px solid black;">DESCRIPTION</th>
+						<th name="th_unit" style="border:1px solid black;">REMARKS</th>
+					</tr>
+				</thead>
+				<tbody>
+					<t t-set="line_no" t-value="0" />
+					<t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)" />
+					<tr t-foreach="lines" t-as="move">
+						<t t-set="line_no" t-value="line_no + 1" />
+						<td name="td_no" style="text-align: center; font-size: 14px;">
+							<span t-esc="line_no" />
+						</td>
+						<td name="td_unit" class="text-right" style="font-size: 14px;">
+							<span t-field="move.product_uom_qty" />
+						</td>
+						<td name="code" style="text-align: center; font-size: 14px;">
+							<span t-field="move.product_id.default_code" />
+							<p t-if="o.picking_type_code == 'outgoing'">
+								<span t-field="move.product_id.sudo().description_pickingout" />
+							</p>
+							<p t-if="o.picking_type_code == 'incoming'">
+								<span t-field="move.product_id.sudo().description_pickingin" />
+							</p>
+						</td>
+						<td name="td_description" style="text-align: center; font-size: 14px;">
+							<span t-field="move.product_id.name" />
+						</td>
+						<td name="td_remarks" style="text-align: center; font-size: 14px;">
+							<span t-field="move.remarks" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</xpath>
+		<!-- ********* End Customization Delivery Order PDF Table********* -->
+		
+
+		<!-- Add New Fields -->
+		<xpath expr="//table[@class='table table-sm mt48']" position="replace">
+			<p></p><br/><br/>
+			<div class="row">
+				<div class="col-6" style="font-size: 14px; margin-left:30px;">
+					<strong>Received By:</strong>
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<strong>_______________________________________</strong>
+					<br />
+					<strong>Name:</strong>
+					<span t-field="o.received_by" />
+					<br />
+					<strong>Date:</strong>
+					<span t-field="o.received_date" />
+				</div>
+				<div class="col-6" style="font-size: 14px; margin-left:30px;">
+					<strong>Delivery By:</strong>
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<strong>_______________________________________</strong>
+					<br />
+					<strong>Name:</strong>
+					<span t-field="o.delivered_by" />
+					<br />
+					<strong>Date:</strong>
+					<span t-field="o.delivered_date" />
+				</div>
+			</div>
+		</xpath>
+		
+		
+		<xpath expr="//div[@class='page']/p/t[1]" position="replace" />
+		
+	</template>
+
+</odoo>

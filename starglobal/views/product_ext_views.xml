@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<!-- ***************** Inherit Invoice Form View ************* -->
+	<record id="inherit_account_move_ext_form" model="ir.ui.view">
+		<field name="name">product.product.ext</field>
+		<field name="inherit_id" ref="product.product_normal_form_view"></field>
+		<field name="model">product.product</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+			<xpath expr="//form//sheet/notebook/page[@name='inventory']/group/group/div[@name='volume']" position="after">
+				<field name="nt_weight" string="Net Weight"/>
+				<field name="gr_weight" string="Gross Weight"/>
+				<field name="dimension" string="Dimension"/>
+			 </xpath>
+		</field>
+	</record>
+</odoo>

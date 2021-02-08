@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+	<!-- Inherit payment receipt report (from module account) -->
+	<template id="report_payment_document_inherit" inherit_id="account.report_payment_receipt_document">
+	
+		<xpath expr="//t[@t-set='o']" position="replace" />
+		<xpath expr="//div/h3" position="replace" />
+		<xpath expr="//div/div[@class='row mt64']" position="replace" />
+
+
+		<!-- ********* Customization Payment Receipt PDF Header ********* -->
+		<xpath expr="//div/div[@class='row']" position="replace">
+			<h6 style="text-align:right;"> <strong>PAYMENT RECEIPT</strong></h6><br/>
+			<div class="row" style="font-size: 16px;">
+				<div class="col-6" style="text-align: left;">
+					<strong>PAYMENT RECEIPT KYAT/US$ </strong>
+				</div>
+				<div class="col-6" t-if="o.payment_date"
+					style="text-align: right; font-size: 16px;">
+					<strong>Issued Date:</strong>
+					<span t-field="o.payment_date" />
+				</div>
+			</div>
+			<br />
+			<br />
+		</xpath>
+		<xpath expr="//div/div[@class='row mb64']" position="replace">
+			<div class="row" style="margin-left:10px; font-size: 14px;">
+				<div calss="col-6">
+					<strong>PAID TO:</strong>
+				</div>
+				<div class="col-8">
+					<span t-esc="o.company_id.name" />
+				</div>
+			</div>
+			<br />
+			<div class="row" style="margin-left:10px; font-size: 14px;">
+				<div calss="col-6">
+					<strong>PAID By:</strong>
+				</div>
+				<div class="col-8">
+					<span t-field="o.partner_id" />
+				</div>
+			</div>
+			<br />
+		</xpath>
+		<!-- ********* End Customization Payment Receipt PDF ********* -->
+		
+
+		<!-- ********* Customization Payment Receipt PDF Table Header ********* -->
+		<xpath expr="//table[@class='table table-sm']/thead"
+			position="replace">
+			<thead style="border:1px solid black;">
+				<tr style="text-align: center; font-size: 14px; border-color: white;background-color:#00008B; color: white;">
+					<th name="th_date" style="border:1px solid black;">DATE</th>
+					<th name="th_cmp_name" style="border:1px solid black;">COMPANY NAME</th>
+					<th name="th_ti" style="border:1px solid black;">TI REF NUMBER</th>
+					<th name="th_amount" style="border:1px solid black;">AMOUNT</th>
+				</tr>
+			</thead>
+		</xpath>
+		
+
+		<!-- ********* Customization Payment Receipt PDF Table Body ********* -->
+		<xpath expr="//tbody/tr" position="replace">
+			<tr t-foreach="o.get_invoice()" t-as="inv">
+				<td name="td_date" style="text-align: center; font-size: 14px; border:1px solid black;">
+					<span t-field="o.payment_date" />
+				</td>
+				<td name="td_cmp_name" style="text-align: center; font-size: 14px; border:1px solid black;">
+					<span t-field="o.partner_id" />
+				</td>
+				<td name="td_ti" style="text-align: center; font-size: 14px; border:1px solid black;">
+					<span t-field="inv.name" />
+				</td>
+				<td name="td_amount" style="text-align: center; font-size: 14px; border:1px solid black;">
+					<!-- <span t-field="o.journal_id.currency_id" /> -->
+					<span t-field="inv.amount_total_signed" />
+				</td>
+			</tr>
+		</xpath>
+		<!-- ********* End Payment Receipt PDF Table Body ********* -->
+		
+
+		<!-- Add New Fields -->
+		<xpath expr="//div[@class='page']" position="after">
+			<br />
+			<br />
+			<div calss="col-5" style="text-align: left; font-size: 14px;">
+				<span t-field="o.journal_id.name" />
+				<!-- <span t-field="o.journal_id.currency_id" /> -->
+				<span t-field="o.amount" />
+			</div>
+			<br />
+			<div calss="col-5" style="text-align: left; font-size: 14px;">
+				AMOUNT IN WORDS:
+				<span t-esc="o.get_kyat_explanation(o.amount)" />
+			</div>
+			<br />
+			<div calss="col-5" style="text-align: left; font-size: 14px;">
+				REF PI NUMBER:
+				<t t-esc="o.get_pi()" />
+			</div>
+			<br />
+			<div calss="col-5" style="text-align: left; font-size: 14px;">
+				RECEIVED AMOUNT:
+				<span t-field="o.journal_id.name" />
+				<span t-field="o.amount" />
+			</div>
+			<br />
+			<div calss="col-5" style="text-align: left; font-size: 14px;">
+				REMARK:
+				<span t-field="o.remark" />
+			</div>
+			<br />
+			<div calss="col-5" style="text-align: left; font-size: 14px;">
+				<strong>
+					<u>Acknowledgement:</u>
+				</strong>
+				<br />
+				<br />
+				<span t-field="o.acknowledge" />
+			</div>
+			<br />
+			<p></p>
+			<br />
+			<div class="row">
+				<div class="col-6" style="font-size: 14px; margin-left:30px;">
+					<strong>Paid By:</strong>
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<strong>_______________________________________</strong>
+					<br />
+					<strong>Name:</strong>
+					<span t-field="o.paid_by" />
+					<br />
+					<strong>Date:</strong>
+					<span t-field="o.paid_date" />
+				</div>
+				<div class="col-6" style="font-size: 14px; margin-left:30px;">
+					<strong>Collected By:</strong>
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<p></p>
+					<br />
+					<strong>_______________________________________</strong>
+					<br />
+					<strong>Name:</strong>
+					<span t-field="o.collected_by" />
+					<br />
+					<strong>Date:</strong>
+					<span t-field="o.collected_date" />
+				</div>
+			</div>
+		</xpath>
+
+	</template>
+	
+</odoo>

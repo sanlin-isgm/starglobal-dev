@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	
+	<!-- Inherit invoice report -->
+	<template id="packing_pdf_report_inherit"
+		inherit_id="stock.report_package_barcode">
+		<xpath expr="//div[@class='page']" position="replace">
+			 <t t-foreach="o.action_view_picking_ext()" t-as="l">
+			 <t t-set="lines" t-value="request.env['stock.move.line'].search([('picking_id', '=', l.id)])"/>
+				<h6 style="text-align:right;"> <strong>PACKING LIST</strong></h6><br/>
+				<div class="page2" style="page-break-after: always;">
+					<div class="row" style="font-size: 14px;">
+						<div class="col-3" />
+						<div class="col-3" />
+						<div class="col-3" style="text-align: right;">
+							<strong>PACKING LIST NO:</strong>
+						</div>
+						<div class="col-3">
+							<div t-field="o.name"/>
+						</div>
+					</div>
+					
+					<div class="row" style="font-size: 14px;">
+						<div class="col-3" />
+						<div class="col-3" />
+						<div class="col-3" style="text-align: right;">
+							<strong>DATE:</strong>
+						</div>
+						<div class="col-3">
+							<div t-field="o.packing_date"/>
+						</div>
+					</div>
+										
+					<div class="row" style="font-size: 14px;">
+						<div class="col-2" style="text-align: right;">
+							<strong>SOLD TO:</strong>
+						</div>
+						<div class="col-4">
+							<span t-field="l.partner_id.name"/>
+						</div>
+						<div class="col-3" style="text-align: right;">
+							<strong>DELIVERY ADDRESS:</strong>
+						</div>
+						<div class="col-3">
+						<div t-field="l.partner_id"
+							t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}' />
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-3"><br/></div>
+						<div class="col-3"><br/></div>
+						<div class="col-3"><br/></div>
+						<div class="col-3"><br/></div>
+					</div>
+					
+					<!-- Table -->
+					<table class="table table-sm" style="border-bottom: 0px solid white !important;">
+		                <t t-set="has_serial_number" t-value="o.quant_ids.mapped('lot_id')" />
+		                <!-- Table Header -->
+		                <thead class="cr-th" style="font-size: 14px; background-color:#00008B; color: white;">
+							<tr style="text-align: center;">
+								<th name="th_no" style="border:1px solid white;">NO.</th>
+								<th name="th_qty" style="border:1px solid white;">QTY</th>
+								<th name="th_unit" style="border:1px solid white;">UNIT</th>
+								<th name="th_pcode" style="border:1px solid white;">PRODUCT CODE</th>
+								<th name="th_description" style="border:1px solid white;">DESCRIPTION</th>
+								<th name="th_net_wt" style="border:1px solid white;">NET WT (KGS)</th>
+								<th name="th_gr_wt" style="border:1px solid white;">GR. WT (KGS)</th>
+								<th name="th_dimension" style="border:1px solid white;">DIMENSION (CM)</th>
+							</tr>
+						</thead>
+						
+						<!-- Table Body -->
+		                <tbody>
+		                	<t t-set="line_no" t-value="0" />
+		                	<t t-foreach="request.env['stock.move.line'].search([('picking_id', '=', l.id)])" t-as="obj">
+		                		<tr>
+		           					<t t-set="line_no" t-value="line_no + 1" />
+									<td name="td_no" style="text-align: center;font-size: 14px;">
+										<span t-esc="line_no" />
+									</td>
+									<td name="th_qty" class="text-right"  style="font-size: 14px;">
+										<span t-field="obj.qty_done"/>
+									</td>
+									 <td name="th_unit" style="text-align: center;font-size: 14px;">
+										<span t-field="obj.product_uom_id.name"/>
+									</td>
+									<td name="th_pcode" style="text-align: center;font-size: 14px;">
+						                <span t-field="obj.product_id.default_code"/>
+						            </td>
+									<td name="th_description" class="text-right" style=" font-size: 14px;">
+										<span t-field="obj.product_id.name"/>
+									</td>  
+									<td name="th_net_wt" class="text-right" style=" font-size: 14px;">
+										<span t-field="obj.total_kg_net"/>
+									</td>
+									<td name="th_gr_wt" class="text-right" style=" font-size: 14px;">
+										<span t-field="obj.total_kg_gross"/>
+									</td>
+									<td name="th_dimension" class="text-right" style=" font-size: 14px;">
+										<span t-field="obj.dimension"/>
+									</td>
+								</tr>
+							</t>
+		                </tbody>
+		            </table>
+					<br/><br/><br/>
+		            <div class="row" style="font-size: 14px;">
+						<div class="col-2" style="text-align: right;">
+							<strong>REMARKS:</strong>
+						</div>
+						<div class="col-4">
+							<span t-field="o.packing_remark"/>
+						</div>
+						<div class="col-3"/>
+						<div class="col-3"/>
+					</div>
+					<div class="row" style="font-size: 14px;">
+						<div class="col-2" style="text-align: right;">
+							<strong>PALLET:</strong>
+						</div>
+						<div class="col-4">
+							<span t-esc="line_no"/>
+						</div>
+						<div class="col-3"/>
+						<div class="col-3"/>
+					</div>
+					<div class="row" style="font-size: 14px;">
+						<div class="col-2" style="text-align: right;">
+							<strong>TOTAL KG NET:</strong>
+						</div>
+						<div class="col-4">
+							<span t-esc="sum(net_obj.total_kg_net for net_obj in lines) "/>
+						</div>
+						<div class="col-3"/>
+						<div class="col-3"/>
+					</div>
+					<div class="row" style="font-size: 14px;">
+						<div class="col-2" style="text-align: right;">
+							<strong>TOTAL KG GROSS:</strong>
+						</div>
+						<div class="col-4">
+							<span t-esc="sum(net_obj.total_kg_gross for net_obj in lines) "/>
+						</div>
+						<div class="col-3"/>
+						<div class="col-3"/>
+					</div>
+					<div class="row" style="font-size: 14px;">
+						<div class="col-2" style="text-align: right;">
+							<strong>VOL M3:</strong>
+						</div>
+						<div class="col-4">
+							<span t-field="o.packing_vol_m3"/>
+						</div>
+						<div class="col-3"/>
+						<div class="col-3"/>
+					</div>
+					<div class="row" style="margin-left:30px;">
+						<div class="col-6">
+							<p></p>
+							<br />
+							<p></p>
+							<br />
+							<p></p>
+							<br />
+							<p></p>
+							<br />
+							<strong>_______________________________________</strong>
+							<br></br>
+							<span style="margin-left:70px;font-size: 14px"> Teo Kok Yong</span>
+							<br />
+							<strong style="margin-left:15px;font-size: 14px">Star Global Distribution Pte Ltd:</strong>
+						</div>
+					</div>
+		    	</div>
+		    </t>	 
+		</xpath>
+	</template>
+</odoo>

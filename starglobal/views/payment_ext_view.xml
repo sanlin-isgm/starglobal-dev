@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+	<!-- **************** Inherit Form view for Payment **************** -->
+	<record id="payment_ext_form_view" model="ir.ui.view">
+		<field name="name">account.payment</field>
+		<field name="inherit_id" ref="account.view_account_payment_form"></field>
+		<field name="model">account.payment</field>
+		<field name="arch" type="xml">
+	
+			<xpath expr="//form//sheet//group//group//field[@name='payment_method_code']" position="after">
+				<field name="remark"/>		
+			</xpath>
+			
+			<xpath expr="//form//sheet//group//group//field[@name='remark']" position="after">
+				<field name="acknowledge"/>		
+			</xpath>
+			
+			<xpath expr="//form//sheet//group//group//field[@name='acknowledge']" position="after">
+				<field name="paid_by"/>			
+			</xpath>
+			
+			<xpath expr="//form//sheet//group//group//field[@name='paid_by']" position="after">
+				<field name="paid_date"/>			
+			</xpath>
+			
+			<xpath expr="//form//sheet//group//group//field[@name='paid_date']" position="after">
+				<field name="collected_by"/>		
+			</xpath>
+			
+			<xpath expr="//form//sheet//group//group//field[@name='collected_by']" position="after">
+				<field name="collected_date"/>	
+			</xpath>
+			 
+			 
+		</field>
+	</record>
+</odoo>

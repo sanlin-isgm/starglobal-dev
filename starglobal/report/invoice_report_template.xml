@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- Inherit invoice report -->
+	<template id="invoice_pdf_report_inherit"
+		inherit_id="account.report_invoice_document">
+		<xpath expr="//div[@class='page']/div[1]" position="replace" />
+		<xpath expr="//div[@class='page']/h2" position="replace" />
+		<xpath expr="//t[@t-set='address']" position="replace">
+
+			<!-- ********* Customization Invoice PDF Header ********* -->
+			<t t-if="not (o.type == 'out_refund')">
+				<h6 style="text-align:right;"> <strong>TAX INVOICE</strong></h6><br/>
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Bill To:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="o.partner_id.name" />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Invoice Number:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-3" />
+					<div class="col-3" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Customer Ref:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.partner_id.comment" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-3" />
+					<div class="col-3" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Quotation Ref:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.invoice_origin" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-3" />
+					<div class="col-3" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Sales Person:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.invoice_user_id.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-3" />
+					<div class="col-3" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Invoice Date:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.invoice_date" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-3" />
+					<div class="col-3" />
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Currency:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.currency_id.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+
+					<div class="col-2" style="text-align: right;">
+						<strong>Ship To:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="o.partner_shipping_id"
+							t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}' />
+
+
+					</div>
+					<div class="col-3" style="text-align: right;">
+						<strong>Shipping Details:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.invoice_incoterm_id.name" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3">
+						<br />
+					</div>
+					<div class="col-3">
+						<br />
+					</div>
+					<div class="col-3">
+						<br />
+					</div>
+					<div class="col-3">
+						<br />
+					</div>
+				</div>
+			</t>
+			<!-- ********* End top Customization Invoice PDF ********* -->
+
+
+			<!-- ********* Customization Credit Note PDF Header ********* -->
+			<t t-if="o.type == 'out_refund'">
+				<h6 style="text-align:right;"> <strong>CREDIT NOTE</strong></h6><br/>
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Customer Name:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="o.partner_id.name" />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Credit Note No:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Address:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="o.partner_id"
+							t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}' />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Date:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.invoice_date" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Phone:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="o.partner_id.phone" />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Ref Tax Invoice No:</strong>
+					</div>
+					<div class="col-3">
+						<t t-esc="o.action_ext()" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Fax:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="o.partner_id.fax" />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Ref Tax Invoice Date:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.invoice_date" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Email:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="o.partner_id.email" />
+					</div>
+					<div class="col-3" />
+					<div class="col-3" />
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Attn:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="o.partner_id.name" />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>PI Ref No:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="o.invoice_origin" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3">
+						<br />
+					</div>
+					<div class="col-3">
+						<br />
+					</div>
+					<div class="col-3">
+						<br />
+					</div>
+					<div class="col-3">
+						<br />
+					</div>
+				</div>
+			</t>
+			<!-- ********* End top Customization Credit Note PDF ********* -->
+		</xpath>
+
+
+		<!-- Add table headers -->
+		<xpath
+			expr="//table[@class='table table-sm o_main_table']/thead"
+			position="replace">
+			<thead class="cr-th"
+				style="font-size: 14px; background-color:#00008B; color: white;">
+				<tr style="text-align: center;">
+					<th name="th_no" style="border:1px solid white;">SR#</th>
+					<t t-if="not o.type == 'out_refund'">
+						<th name="th_part_no" style="border:1px solid white;">PART NO</th>
+					</t>
+					<th name="th_description" style="border:1px solid white;">DESCRIPTION</th>
+					<th name="th_qty" style="border:1px solid white;">QUANTITY</th>
+					<th name="th_unit" style="border:1px solid white;">UoM</th>
+					<th name="th_priceunit" style="border:1px solid white;">UNIT PRICE</th>
+					<th name="th_subtotal" style="border:1px solid white;">AMOUNT</th>
+				</tr>
+			</thead>
+		</xpath>
+
+
+		<!-- ********* Customization Invoice PDF Table Body********* -->
+		<xpath expr="//tbody[@class='invoice_tbody']/t[1]"
+			position="after">
+			<t t-set="line_no" t-value="0" />
+		</xpath>
+
+		<xpath expr="//tbody[@class='invoice_tbody']/t[3]/tr/t[1]"
+			position="replace">
+			<t t-if="not line.display_type"
+				name="account_invoice_line_accountable">
+				<t t-if="not (o.type == 'out_refund')">
+					<t t-set="line_no" t-value="line_no + 1" />
+					<td name="td_no" style="text-align: center;font-size: 14px;">
+						<span t-esc="line_no" />
+					</td>
+					<td name="td_pno" style="text-align: center;font-size: 14px;">
+						<span t-esc="line.product_id.default_code" />
+					</td>
+					<td name="td_description"
+						style="text-align: center;font-size: 14px;">
+						<span t-esc="line.product_id.name" />
+					</td>
+					<td name="td_quantity" class="text-right"
+						style="font-size: 14px;">
+						<span t-field="line.quantity" />
+					</td>
+					<td name="td_unit" class="text-right" style=" font-size: 14px;">
+						<span t-field="line.product_uom_id.name"/> 
+					</td>
+					<td name="td_priceunit" class="text-right"
+						style=" font-size: 14px;">
+						<span t-field="line.price_unit" />
+					</td>
+					<td name="td_subtotal" class="text-right o_price_total"
+						style=" font-size: 14px;">
+						<span t-field="line.price_subtotal"
+							groups="account.group_show_line_subtotals_tax_excluded" />
+						<span t-field="line.price_total"
+							groups="account.group_show_line_subtotals_tax_included" />
+					</td>
+				</t>
+
+
+
+				<!-- ********* Customization Credit Note PDF Table Body********* -->
+				<t t-if="o.type == 'out_refund'">
+					<t t-set="line_no" t-value="line_no + 1" />
+					<td name="td_no" style="text-align: center;font-size: 14px;">
+						<span t-esc="line_no" />
+					</td>
+					<td name="td_description"
+						style="text-align: center;font-size: 14px;">
+						<span t-field="line.product_id.name"
+							t-options="{'widget': 'text'}" />
+					</td>
+					<td name="td_quantity"  class="text-right"
+						style="text-align: center;font-size: 14px;">
+						<span t-field="line.quantity" />
+					</td>
+					<td name="td_unit" class="text-right" style=" font-size: 14px;">
+						<span t-field="line.product_uom_id.name" /> 
+					</td>
+					<td name="td_priceunit" class="text-right"
+						style=" font-size: 14px;">
+						<span t-field="line.price_unit" />
+					</td>
+					<td name="td_subtotal" class="text-right o_price_total"
+						style=" font-size: 14px;">
+						<span t-field="line.price_subtotal"
+							groups="account.group_show_line_subtotals_tax_excluded" />
+						<span t-field="line.price_total"
+							groups="account.group_show_line_subtotals_tax_included" />
+					</td>
+				</t>
+			</t>
+		</xpath>
+
+		<!-- Change Font Size for Section -->
+		<xpath expr="//tbody[@class='invoice_tbody']/t[3]/tr/t[2]"
+			position="replace">
+			<t t-if="line.display_type == 'line_section'">
+				<td colspan="99">
+					<span t-field="line.name" t-options="{'widget': 'text'}"
+						style="font-size: 14px;" />
+				</td>
+				<t t-set="current_section" t-value="line" style="font-size: 14px;" />
+				<t t-set="current_subtotal" t-value="0" style="font-size: 14px;" />
+			</t>
+		</xpath>
+
+		<!-- Change Font Size For Sub Total, Tax and Total -->
+		<xpath expr="//div[@class='clearfix']/div/div/table"
+			position="replace">
+
+			<table class="table table-sm;page-break-inside: avoid;">
+				<tr class="border-black o_subtotal" style="font-size: 14px;">
+					<td>
+						<strong>Subtotal</strong>
+					</td>
+					<td class="text-right">
+						<span t-field="o.amount_untaxed" />
+					</td>
+				</tr>
+				<t t-foreach="o.amount_by_group" t-as="amount_by_group">
+					<tr style="font-size: 14px;">
+						<t
+							t-if="len(o.line_ids.filtered(lambda line: line.tax_line_id)) == 1 and o.amount_untaxed == amount_by_group[2]">
+							<td>
+								<span t-esc="amount_by_group[0]" />
+							</td>
+							<td class="text-right o_price_total">
+								<span t-esc="amount_by_group[3]" />
+							</td>
+						</t>
+
+					</tr>
+				</t>
+				<tr class="border-black o_total" style="font-size: 14px;">
+					<td>
+						<strong>Total</strong>
+					</td>
+					<td class="text-right">
+						<span t-field="o.amount_total" />
+					</td>
+				</tr>
+			</table>
+
+		</xpath>
+
+		<!-- Change Font Size forNotes -->
+		<xpath expr="//tbody[@class='invoice_tbody']/t[3]/tr/t[3]"
+			position="replace">
+			<t t-if="line.display_type == 'line_note'">
+				<td colspan="99">
+					<span t-field="line.name" t-options="{'widget': 'text'}"
+						style="font-size: 14px;" />
+				</td>
+			</t>
+		</xpath>
+
+		<!-- Hide Sub Total For Section -->
+		<xpath
+			expr="//tbody[@class='invoice_tbody']/t[3]/t/tr[@class='is-subtotal text-right']"
+			position="replace" />
+
+		<!-- Add Bank Info -->
+		<xpath expr="//p[@name='note']" position="after">
+			<t t-if="not (o.type == 'out_refund')">
+				<div style="padding-top:3px;">
+					<p style="font-size: 14px;">
+						<strong>Bank Details</strong>
+						<br />
+						<strong>Account No:</strong>
+						<span t-field="o.invoice_partner_bank_id.acc_number" />
+						<br />
+						<strong>Account Name:</strong>
+						<span t-field="o.invoice_partner_bank_id.acc_holder_name" />
+						<br />
+						<strong>Bank Name:</strong>
+						<span t-field="o.invoice_partner_bank_id.bank_id.name" />
+						<br />
+					</p>
+				</div>
+			</t>
+			<t t-if="o.type == 'out_refund'">
+				<div class="row" style="margin-left:30px;">
+					<div class="col-6">
+						<p></p>
+						<br />
+						<p></p>
+						<br />
+						<p></p>
+						<br />
+						<p></p>
+						<br />
+						<strong>_______________________________________</strong>
+						<br></br>
+						<span style="margin-left:70px;font-size: 14px"> Teo Kok Yong</span>
+						<br />
+						<strong style="margin-left:15px;font-size: 14px">Star Global Distribution Pte Ltd:</strong>
+					</div>
+
+				</div>
+			</t>
+		</xpath>
+
+		<xpath expr="//div[@class='page']/p[@name='payment_term']"
+			position="replace" />
+		<xpath expr="//div[@class='page']/p[@name='comment']"
+			position="replace">
+			<div calss="col-5" style="text-align: left; font-size: 14px;">
+				AMOUNT IN WORDS:
+				<span t-esc="o.get_kyat_explanation(o.amount_total)" />
+			</div>
+			<span t-field="o.invoice_payment_term_id.note"
+				style="font-size: 14px;" />
+			<br />
+			<span t-field="o.narration" style="font-size: 14px;" />
+		</xpath>
+		<xpath expr="//div[@class='page']/p[1]" position="replace" />
+
+	</template>
+</odoo>

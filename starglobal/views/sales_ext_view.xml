@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- **************** Inherit Form view for Quotation **************** -->
+	<record id="sales_ext_form_view" model="ir.ui.view">
+		<field name="name">sale.order</field>
+		<field name="inherit_id" ref="sale.view_order_form"></field>
+		<field name="model">sale.order</field>
+		<field name="arch" type="xml">
+		
+			<xpath expr="//form/sheet/group/group/field[@name='validity_date']"
+				 position="attributes">
+				 <attribute name="string">Quotation Valid Date</attribute>			
+			</xpath>
+			
+			<xpath expr="//form/sheet/group/group/field[@name='payment_term_id']"
+				position="after">
+				 <field name="po_no" attrs="{'invisible': [('state','!=','sale')]}" />	
+			</xpath>
+			
+			<xpath expr="//notebook/page/field/tree/field[@name='price_unit']"
+				position="after">
+				<field name="remarks"/>				
+			</xpath>
+			
+			<xpath expr="//notebook/page[@name='other_information']/group/group[@name='sale_info']/field[@name='invoice_status']"
+				position="after">
+				<field name="sales_partner_bank_id"/>
+				
+			</xpath>
+		</field>
+	</record>
+	
+	<!-- ***************** Inherit Invoice Form View ************* -->
+	<record id="inherit_account_move_ext_form" model="ir.ui.view">
+		<field name="name">account.move</field>
+		<field name="inherit_id" ref="account.view_move_form"></field>
+		<field name="model">account.move</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+			<xpath expr="//form//sheet/group/group/field[@name='ref']"
+				position="after">
+				<field name="po_number" readonly="1" />
+			</xpath>
+
+
+		</field>
+	</record>
+</odoo>
+		

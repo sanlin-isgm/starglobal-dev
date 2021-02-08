@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+	<template id="external_layout_inheirt"
+		inherit_id="web.external_layout_standard">
+
+		<!-- **************** Inherit External Layout Header ************ -->
+		<xpath expr="//div[1]" position="replace">
+			<div class="header">
+				<div class="row">
+					<div class="row">
+						<div class="col-12">
+							<img t-if="company.logo"
+								t-att-src="image_data_uri(company.logo)" alt="Logo"
+								style="display:block; margin-top:0px; margin-left: auto; margin-right: auto; width: 65%;" />
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</xpath>
+
+		<!-- **************** Inherit External Layout Footer ************ -->
+		<xpath
+			expr="//div[@class='footer o_standard_footer']/div[@class='text-center']"
+			position="replace">
+			<div class="row" style="border-top: 1px solid black;">
+				<div class="col-6" style="font-size: 12px;text-align: left;">
+					<strong>Mergui Showroom Address:</strong>
+					<div t-esc="company.showroom_address" />
+				</div>
+				<div class="col-6" style="font-size: 12px;text-align: right;">
+					<strong>Yangon Office Address:</strong>
+					<span t-field="company.partner_id"
+						t-options='{"widget": "contact", "fields": ["address","phone"], "no_marker": true}' />
+				</div>
+
+			</div>
+		</xpath>
+	</template>
+
+	<!-- Inherit quotation report (from module sale) -->
+	<template id="msg_quotation_report_inherit"
+		inherit_id="sale.report_saleorder_document">
+
+		<xpath expr="//t[@t-set='address']/p" position="replace" />
+		<xpath expr="//t[@t-set='address']" position="replace">
+
+			<!-- ********* Customization Quotation PDF Header ********* -->
+			<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+				<h6 style="text-align:right;"> <strong>QUOTATION</strong></h6><br/>
+				<div class="row" style="font-size: 14px;">
+
+					<div class="col-2" style="text-align: right;">
+						<strong>Customer:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="doc.partner_id"
+							t-options='{"widget": "contact", "fields": ["name"], "no_marker": True}' />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Quotation No:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Address :</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="doc.partner_id"
+							t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}' />
+					</div>
+					<div class="col-3" style="text-align: right;">
+						<strong>Customer Ref:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.partner_id.comment" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Phone :</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="doc.partner_id"
+							t-options='{"widget": "contact", "fields": ["phone"], "no_marker": true}' />
+					</div>
+					<div class="col-3" style="text-align: right;">
+						<strong>Sales person:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.user_id" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Email :</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="doc.partner_id"
+							t-options='{"widget": "contact", "fields": ["email"], "no_marker": true}' />
+					</div>
+					<div class="col-3" style="text-align: right;">
+						<strong>Quotation Date:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.date_order" t-options='{"widget": "date"}' />
+					</div>
+				</div>
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Attention :</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="doc.partner_id"
+							t-options='{"widget": "contact", "fields": ["name"], "no_marker": true}' />
+					</div>
+					<div class="col-3" style="text-align: right;">
+						<strong>Quote Valid to :</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.validity_date" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-3" />
+					<div class="col-3" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Currency :</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.pricelist_id.currency_id.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-3" />
+					<div class="col-3" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Incoterm :</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.incoterm.code" />
+					</div>
+				</div>
+				<div class="row">
+				</div>
+			</t>
+			<!-- ********* End Customization Quotation PDF ********* -->
+
+			<!-- ********* Customization Pro-Forma PDF Header********* -->
+			<t t-if="env.context.get('proforma', False) or is_pro_forma">
+				<h6 style="text-align:right;"> <strong>PRO-FORMA INVOICE</strong></h6><br/>
+				<div class="row" style="font-size: 14px;">
+
+					<div class="col-2" style="text-align: right;">
+						<strong>Bill To:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="doc.partner_id"
+							t-options='{"widget": "contact", "fields": ["name"], "no_marker": True}' />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Invoice Number:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" />
+					<div class="col-4" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Customer Ref:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.partner_id.comment" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" />
+					<div class="col-4" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Quotation Ref:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" />
+					<div class="col-4" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Sales Person:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.user_id" />
+					</div>
+				</div>
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" />
+					<div class="col-4" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Invoice Date:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.date_order" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" />
+					<div class="col-4" />
+					<div class="col-3" style="text-align: right;">
+						<strong>Currency :</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.pricelist_id.currency_id.name" />
+					</div>
+				</div>
+
+				<div class="row" style="font-size: 14px;">
+					<div class="col-2" style="text-align: right;">
+						<strong>Ship To:</strong>
+					</div>
+					<div class="col-4">
+						<div t-field="doc.partner_shipping_id"
+							t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}' />
+					</div>
+
+					<div class="col-3" style="text-align: right;">
+						<strong>Shipping Details:</strong>
+					</div>
+					<div class="col-3">
+						<div t-field="doc.incoterm.code" />
+					</div>
+				</div>
+				<div class="row">
+				</div>
+			</t>
+			<!-- ********* End Customization Quotation PDF ********* -->
+
+		</xpath>
+
+		<!-- <xpath expr="//t3" position="replace" /> -->
+		<xpath expr="//div/h2[@class='mt16']" position="replace" />
+		<xpath expr="//div/div[@class='row mt32 mb32']"
+			position="replace">
+			<p></p>
+		</xpath>
+
+		<xpath
+			expr="//table[@class='table table-sm o_main_table']/thead"
+			position="replace">
+
+			<!-- ********* Customization Quotation PDF Table Header ********* -->
+			<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+				<thead class="cr-th"
+					style="font-size: 14px; background-color:#00008B; color: white;">
+					<tr style="text-align: center; ">
+						<th name="th_no" style="border:1px solid white;">LINE</th>
+						<th name="th_part_no" style="border:1px solid white;">PART NO.</th>
+						<th name="th_description" style="border:1px solid white;">DESCRIPTION</th>
+						<th name="th_qty" style="border:1px solid white;">QUANTITY</th>
+						<th name="th_unit" style="border:1px solid white;">UoM</th>
+						<th name="th_priceunit" style="border:1px solid white;">UNIT PRICE</th>
+						<th name="th_stock_status" style="border:1px solid white;">STOCK STATUS</th>
+						<th name="th_remarks" style="border:1px solid white;">REMARKS</th>
+						<th name="th_subtotal" style="border:1px solid white;">AMOUNT</th>
+					</tr>
+				</thead>
+			</t>
+
+			<!-- ********* Customization Pro-Form PDF Table Header********* -->
+			<t t-if="env.context.get('proforma', False) or is_pro_forma">
+				<thead class="cr-th">
+					<tr
+						style="text-align: center; font-size: 14px; background-color:#00008B; color: white;">
+						<th name="th_no" style="border:1px solid white;">SR#</th>
+						<th name="th_part_no" style="border:1px solid white;">PART NO.</th>
+						<th name="th_description" style="border:1px solid white;">DESCRIPTION</th>
+						<th name="th_qty" style="border:1px solid white;">QUANTITY</th>
+						<th name="th_unit" style="border:1px solid white;">UoM</th>
+						<th name="th_priceunit" style="border:1px solid white;">UNIT PRICE</th>
+						<th name="th_subtotal" style="border:1px solid white;">AMOUNT</th>
+					</tr>
+				</thead>
+			</t>
+		</xpath>
+
+		<!-- ********* Declare Line_no ********* -->
+		<xpath expr="//tbody[@class='sale_tbody']/t[1]" position="after">
+			<t t-set="line_no" t-value="0" />
+		</xpath>
+
+
+		<xpath expr="//tbody[@class='sale_tbody']/t[3]/tr/t[1]"
+			position="replace">
+
+			<!-- ********* Customization Quotation PDF Table Body********* -->
+			<t t-if="not line.display_type">
+				<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+					<!-- *********** increase for Line Number ******** -->
+					<t t-set="line_no" t-value="line_no + 1" />
+
+					<td name="td_no" style="text-align: center; font-size: 14px;">
+						<span t-esc="line_no" />
+					</td>
+					<td name="td_part_no"
+						style="text-align: center;  font-size: 14px;">
+						<span t-field="line.product_id.default_code" />
+					</td>
+					<td name="td_description"
+						style=" text-align: center; font-size: 14px;">
+						<span t-field="line.product_id.name" />
+					</td>
+
+					<td name="td_qty" class="text-right"
+						style="font-size: 14px;">
+						<span t-field="line.product_uom_qty" />
+					</td>
+
+					<td name="td_unit" class="text-right" style="font-size: 14px;">
+						<span t-field="line.product_uom" groups="uom.group_uom" />
+					</td>
+					<td name="td_priceunit" class="text-right"
+						style="font-size: 14px;">
+						<span t-field="line.price_unit" />
+					</td>
+					<td name="td_stock_status" class="text-right"
+						style="font-size: 14px;">
+						<span t-field="line.product_id.qty_available" />
+					</td>
+					<td name="td_remarks"
+						style="text-align: center;  font-size: 14px;">
+						<span t-field="line.remarks" />
+					</td>
+					<td name="td_subtotal" class="text-right o_price_total"
+						style=" font-size: 14px;">
+						<span t-field="line.price_subtotal"
+							groups="account.group_show_line_subtotals_tax_excluded" />
+						<span t-field="line.price_total"
+							groups="account.group_show_line_subtotals_tax_included" />
+					</td>
+				</t>
+
+				<!-- ********* Customization Pro-Forma PDF Table Body********* -->
+				<t t-if="env.context.get('proforma', False) or is_pro_forma">
+					<!-- *********** increase for Line Number ******** -->
+					<t t-set="line_no" t-value="line_no + 1" />
+
+					<td name="td_no" style="text-align: center; font-size: 14px;">
+						<span t-esc="line_no" />
+					</td>
+					<td name="td_part_no"
+						style="text-align: center;  font-size: 14px;">
+						<span t-field="line.product_id.default_code" />
+					</td>
+					<td name="td_description"
+						style="text-align: center;  font-size: 14px;">
+						<span t-field="line.product_id.name" />
+					</td>
+
+					<td name="td_qty" class="text-right"
+						style="font-size: 14px;">
+						<span t-field="line.product_uom_qty" />
+					</td>
+
+					<td name="td_unit" class="text-right"
+						style=" text-align: center; font-size: 14px;">
+						<span t-field="line.product_uom" groups="uom.group_uom" />
+					</td>
+					<td name="td_priceunit" class="text-right"
+						style=" text-align: center; font-size: 14px;">
+						<span t-field="line.price_unit" />
+					</td>
+					<td name="td_subtotal" class="text-right o_price_total"
+						style=" text-align: center; font-size: 14px;">
+						<span t-field="line.price_subtotal"
+							groups="account.group_show_line_subtotals_tax_excluded" />
+						<span t-field="line.price_total"
+							groups="account.group_show_line_subtotals_tax_included" />
+					</td>
+				</t>
+			</t>
+		</xpath>
+
+		<!-- Change Font Size for Section and Notes -->
+		<xpath expr="//tbody[@class='sale_tbody']/t[3]/tr/t[2]"
+			position="replace">
+			<t t-if="line.display_type == 'line_section'">
+				<td name="td_section_line" colspan="99">
+					<span t-field="line.name" style="font-size: 14px;" />
+				</td>
+				<t t-set="current_section" t-value="line" />
+				<t t-set="current_subtotal" t-value="0" />
+			</t>
+		</xpath>
+
+		<!-- Change Font Size for Section and Notes -->
+		<xpath expr="//tbody[@class='sale_tbody']/t[3]/tr/t[3]"
+			position="replace">
+			<t t-if="line.display_type == 'line_note'">
+				<td name="td_note_line" colspan="99" style="font-size: 14px;">
+					<span t-field="line.name" />
+				</td>
+			</t>
+		</xpath>
+
+		<!-- Hide Sub Total For Section -->
+		<xpath
+			expr="//tbody[@class='sale_tbody']/t[3]/t/tr[@class='is-subtotal text-right']"
+			position="replace" />
+
+		<!-- Hide Tax on -->
+		<xpath expr="//div[@class='clearfix']/div/div/table/t"
+			position="replace" />
+
+		<!-- Change Font Size For Sub Total -->
+		<xpath
+			expr="//div[@class='clearfix']/div/div/table/tr[@class='border-black o_subtotal']"
+			position="replace">
+
+			<tr class="border-black o_subtotal" style="font-size: 14px;">
+				<td name="td_amount_untaxed_label">
+					<strong>Subtotal</strong>
+				</td>
+				<td name="td_amount_untaxed" class="text-right">
+					<span t-field="doc.amount_untaxed" />
+				</td>
+			</tr>
+		</xpath>
+
+		<!-- Change Font Size For Total -->
+		<xpath
+			expr="//div[@class='clearfix']/div/div/table/tr[@class='border-black o_total']"
+			position="replace">
+			<tr class="border-black o_total" style="font-size: 14px;">
+				<td name="td_amount_total_label">
+					<strong>Total</strong>
+				</td>
+				<td name="td_amount_total" class="text-right">
+					<span t-field="doc.amount_total" />
+				</td>
+			</tr>
+		</xpath>
+
+		<!-- Add tax -->
+		<xpath
+			expr="//div[@class='clearfix']/div/div/table/tr[@class='border-black o_subtotal']"
+			position="after">
+			<t t-foreach="doc.amount_by_group" t-as="amount_by_group">
+				<tr style="font-size: 14px;">
+					<t
+						t-if="amount_by_group[5] == 1 and doc.amount_untaxed == amount_by_group[2]">
+						<td name="td_amount_by_group_label_3">
+							<span t-esc="amount_by_group[0]" />
+
+						</td>
+						<td name="td_amount_by_group_3"
+							class="text-right o_price_total">
+							<span t-esc="amount_by_group[1]"
+								t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+						</td>
+					</t>
+					<t t-else="">
+						<td name="td_amount_by_group_label">
+							<span t-esc="amount_by_group[0]" />
+						</td>
+						<td name="td_amount_by_group" class="text-right o_price_total">
+							<span t-esc="amount_by_group[1]"
+								t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+						</td>
+					</t>
+				</tr>
+			</t>
+		</xpath>
+
+		<!-- Change Font Size For Notes -->
+		<xpath expr="//div[@class='page']/p[@t-field='doc.note']"
+			position="replace">
+			<span t-field="doc.payment_term_id.note"
+				style=" font-size: 14px;" />
+			<p t-field="doc.note" style=" font-size: 14px;" />
+		</xpath>
+
+		<!-- Change Place For Payment Terms -->
+		<!-- <xpath expr="//div[@class='page']/p[@t-field='doc.note']" position="before"> 
+			<p t-if="doc.payment_term_id.note"> <span t-field="doc.payment_term_id.note" 
+			style=" font-size: 14px;" /> </p> </xpath> -->
+
+		<!-- Hide Payment Terms -->
+		<xpath
+			expr="//div[@class='page']/p[@t-if='doc.payment_term_id.note']"
+			position="replace" />
+
+		<!-- Add Footer -->
+		<xpath
+			expr="//div[@class='page']/p[@id='fiscal_position_remark']"
+			position="after">
+			<t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+				<p>
+					<strong style="font-size: 14px;">Best Regards,</strong>
+					<br />
+					<strong style="font-size: 14px;">Star Global Distribution</strong>
+				</p>
+			</t>
+
+			<t t-if="env.context.get('proforma', False) or is_pro_forma">
+				<p style="font-size: 14px;">
+					<strong>Bank Details</strong>
+					<br />
+					<strong>Account No:</strong>
+					<span t-field="doc.sales_partner_bank_id.acc_number" />
+					<br />
+					<strong>Account Name:</strong>
+					<span t-field="doc.sales_partner_bank_id.acc_holder_name" />
+					<br />
+					<strong>Bank Name:</strong>
+					<span t-field="doc.sales_partner_bank_id.bank_id.name" />
+					<br />
+
+					<span>Notes:</span>
+					<br />
+					<span t-field="doc.client_order_ref" />
+				</p>
+			</t>
+		</xpath>
+	</template>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="backorder_summary_report_form" model="ir.ui.view">
+		<field name="name">Backorder Summary Report</field>
+		<field name="model">backorder.report.template</field>
+		<field name="arch" type="xml">
+			<form string="Backorder Summary Report">
+				<group>
+					<field name="type" widget="radio"/>
+					<field name="cus_id" attrs="{'invisible': [('type', '=', 'vendor')]}" />
+					<field name="vendor_id" attrs="{'invisible':[('type', '=', 'customer')]}" />
+					<field name="sale_order" widget="many2many_tags" attrs="{'invisible': [('type', '=', 'vendor')]}" />
+					<field name="purchase_order" widget="many2many_tags" attrs="{'invisible':[('type', '=', 'customer')]}" />
+				</group>
+				<footer>
+					<button name="print_backorder_report_template"
+						string="Print" type="object" class="btn-primary" />
+					<button string="Cancel" class="btn-default" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_backorder_summary"
+		model="ir.actions.act_window">
+		<field name="name">Backorder Summary Report</field>
+		<field name="res_model">backorder.report.template</field>
+		<field name="view_mode">form</field>
+		<field name="target">new</field>
+	</record>
+	
+	<menuitem id="menu_backorder_summary_report"
+		parent="stock.menu_warehouse_report" sequence="104"
+		name="Backorder Summary Report" action="action_backorder_summary" />
+
+
+
+</odoo>
